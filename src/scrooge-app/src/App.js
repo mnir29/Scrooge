@@ -55,7 +55,7 @@ function App() {
   
   // Greeting and name for user
   const greeting = "Time to make a fortune";
-  const name = "Srcooge";
+  const name = "Scrooge";
   
 
   // function for updating stock data
@@ -181,6 +181,7 @@ function App() {
   return (
     <div className="App">
       
+      {/* Greetings, instructions and file input */}
       <Typography variant="h6">{greeting}, {name}!</Typography>
       <Typography variant="subtitle1">{instruction}</Typography>
       <input
@@ -191,12 +192,14 @@ function App() {
         onChange={handleFileUpload}
       />
 
+      {/* Import button activates, when file consisting data is added */}
       <label htmlFor="button-file-upload">
         <Button color="inherit" onClick={fetchDataImport} disabled={data === null} className={classes.buttons}>
           Import
         </Button>
       </label>
 
+      {/* Date inputs are rendered if data is imported */}
       {imported ? (
         <form>
         <TextField
@@ -204,8 +207,6 @@ function App() {
           id="start-date"
           label="Start Date"
           type="date"
-          //defaultValue="2017-05-24"
-          //className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
@@ -216,19 +217,19 @@ function App() {
           id="end-date"
           label="End Date"
           type="date"
-          //defaultValue="2017-05-24"
-          //className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
           onChange={updateEnd}
         />
+        {/* Analyze button activates if inputs are valid enough */}
         <Button color="inherit" onClick={handleAnalysis} disabled={!readyToAnalyze} className={classes.buttons}>Analyze</Button>
       </form>
       ) : (
         <div />
       )}
 
+      {/* Data analysis is shown, when back end returns something */}
       {analyzedData !== null ? (
         <div className={classes.analysis}>
 
