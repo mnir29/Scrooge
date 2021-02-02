@@ -69,7 +69,7 @@ function App() {
     })
   }
 
-  // Necessary?
+  // When page is loaded, application in initialized with empty data
   React.useEffect(() => {
     if (data === null) {
       updateData();  
