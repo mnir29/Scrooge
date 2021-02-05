@@ -1,6 +1,5 @@
 import './App.css';
 import * as React from "react";
-import * as XLSX from 'xlsx';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
@@ -8,6 +7,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { makeStyles } from '@material-ui/core/styles';
+import { parseCSV } from './parseCSV';
+import { updateData, fetchAnalysis } from './apiCalls';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -56,103 +57,35 @@ function App() {
   // Greeting and name for user
   const greeting = "Time to make a fortune";
   const name = "Scrooge";
-  
-
-  // function for updating stock data
-  const updateData = async () => {
-    await fetch('api/data', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({data: data})
-    })
-  }
 
   // When page is loaded, application in initialized with empty data
   React.useEffect(() => {
     if (data === null) {
-      updateData();  
+      updateData(data);  
     }
   })
-
-  // Parsing stock data from csv to JSON
-  const csvToJSON = dataString => {
-    
-    // Parsing data lines to array and parsing column headers from first row
-    const lines = dataString.split(/\r\n|\n/);
-    const dataHeaders = lines[0].split(", ");
-
-    const dataArray = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      const rowData = lines[i].split(", ");
-      if (dataHeaders && rowData.length === dataHeaders.length) {
-        const rowObj = {};
-        for (let j = 0; j < dataHeaders.length; j++) {
-          let dataItem = rowData[j];
-          if (dataHeaders[j]) {
-            rowObj[dataHeaders[j]] = dataItem;
-          }
-        }
-        dataArray.push(rowObj);
-      }
-    }
-    
-    // Log can be erased later
-    console.log(dataArray);
-    setData(dataArray);
-  } 
-
 
   /*
    * Event handlers
    *
    */
 
-  // reading csv file
+  // reading and parsing csv file
   const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
-        // Parsing file data
-        const binaryString = evt.target.result;
-        const binaryWorksheets = XLSX.read(binaryString, {type: 'binary'});
-
-        // Getting first sheet of the document
-        const worksheetName = binaryWorksheets.SheetNames[0];
-        const worksheet = binaryWorksheets.Sheets[worksheetName];
-
-        const csvData = XLSX.utils.sheet_to_csv(worksheet, {header: 1});
-        csvToJSON(csvData);
-      }
-      reader.readAsBinaryString(file);
-    }
-
+    setData(parseCSV(event));
   }
 
   // calling for updateData function for posting data to API
   const fetchDataImport = () => {
-    updateData();
+    updateData(data);
     setImported(true);
     setAnalyzedData(null);
   }
 
-  // POST method to api for analyzing data within given dates
+  // fetching analysis of data
   const handleAnalysis = () => {
-    const fetchAnalysis = async () => {
-      const response = await fetch('api/data/analysis', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({start: startDate, end: endDate})
-      });
-      const res = await response.json();
-      setAnalyzedData(res);
-    };
-    fetchAnalysis();
+    fetchAnalysis(startDate, endDate)
+      .then(result => setAnalyzedData(result));
   } 
 
   // updating startdate
