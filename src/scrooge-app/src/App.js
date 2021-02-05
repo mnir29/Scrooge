@@ -37,7 +37,7 @@ function App() {
   const [analyzedData, setAnalyzedData] = React.useState(null);
 
   // Instructions for user change according to inputs and whether they are valid
-  var instruction;
+  let instruction;
   if (!imported) {
     instruction = "Import stock data to analyze as CSV file";
   } else if (startDate === undefined || endDate === undefined) {
@@ -128,7 +128,8 @@ function App() {
         csvToJSON(csvData);
       }
       reader.readAsBinaryString(file);
-    }   
+    }
+
   }
 
   // calling for updateData function for posting data to API

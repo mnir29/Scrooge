@@ -15,7 +15,7 @@ const path = require('path');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// To find React applications public folder
+// To find React application's public folder
 app.use('/', express.static(path.join(__dirname, '/scrooge-app/build')));
 
 app.use('/', express.static('public'));

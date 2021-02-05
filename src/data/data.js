@@ -5,7 +5,7 @@
  */
 
 // Variable for saving imported data
-var savedData;
+let savedData;
 
 /*
  * Function for saving imported data to variable
