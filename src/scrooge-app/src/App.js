@@ -2,13 +2,13 @@ import './App.css';
 import * as React from "react";
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { makeStyles } from '@material-ui/core/styles';
 import { parseCSV } from './parseCSV';
 import { updateData, fetchAnalysis } from './apiCalls';
+import DateInputs from './DateInputs';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -51,9 +51,6 @@ function App() {
     instruction = "May this fine data be helpful!";
   }
 
-  // To determine if analyze-button is disabled or not (date check)
-  const readyToAnalyze = Boolean(new Date(startDate) <= new Date(endDate) && startDate !== undefined && endDate !== undefined);
-  
   // Greeting and name for user
   const greeting = "Time to make a fortune";
   const name = "Scrooge";
@@ -133,35 +130,14 @@ function App() {
         </Button>
       </label>
 
-      {/* Date inputs are rendered if data is imported */}
-      {imported ? (
-        <form>
-        <TextField
-          className={classes.dates}
-          id="start-date"
-          label="Start Date"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={updateStart}
-        />
-        <TextField
-          className={classes.dates}
-          id="end-date"
-          label="End Date"
-          type="date"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={updateEnd}
-        />
-        {/* Analyze button activates if inputs are valid enough */}
-        <Button color="inherit" onClick={handleAnalysis} disabled={!readyToAnalyze} className={classes.buttons}>Analyze</Button>
-      </form>
-      ) : (
-        <div />
-      )}
+      <DateInputs
+        imported={imported}
+        startDate={startDate}
+        endDate={endDate}
+        updateStart={updateStart}
+        updateEnd={updateEnd}
+        handleAnalysis={handleAnalysis}
+      />
 
       {/* Data analysis is shown, when back end returns something */}
       {analyzedData !== null ? (
